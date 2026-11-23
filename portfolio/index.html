@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>林知远 · 全栈与系统开发</title>
+<meta name="description" content="林知远的个人作品集：全栈开发与 Android 系统层工程实践，包含开源项目、技术栈与联系方式。" />
+<meta property="og:title" content="林知远 · 全栈与系统开发" />
+<meta property="og:description" content="全栈开发与 Android 系统层工程实践。作品集、技术栈与联系方式。" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23080b10'/%3E%3Cpath d='M18 44 32 16l14 28' stroke='%235eead4' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<style>
+  :root{
+    --bg:#080b10;
+    --bg-soft:#0c1118;
+    --card:rgba(255,255,255,.035);
+    --card-strong:rgba(255,255,255,.06);
+    --line:rgba(255,255,255,.09);
+    --text:#e8eef5;
+    --muted:#8f9dac;
+    --accent:#5eead4;
+    --accent-2:#7dd3fc;
+    --accent-3:#a78bfa;
+    --glow:rgba(94,234,212,.16);
+    --shadow:0 24px 60px -24px rgba(0,0,0,.85);
+    --max:1120px;
+    --radius:22px;
+    color-scheme:dark;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f7f9;
+    --bg-soft:#ffffff;
+    --card:rgba(12,17,24,.035);
+    --card-strong:rgba(12,17,24,.06);
+    --line:rgba(12,17,24,.1);
+    --text:#0b1016;
+    --muted:#5a6675;
+    --accent:#0d9488;
+    --accent-2:#0284c7;
+    --accent-3:#7c3aed;
+    --glow:rgba(13,148,136,.14);
+    --shadow:0 24px 60px -30px rgba(20,32,48,.35);
+    color-scheme:light;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Inter","SF Pro Text",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition:background .45s ease,color .45s ease;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(60rem 40rem at 82% -10%, var(--glow), transparent 60%),
+      radial-gradient(48rem 34rem at -12% 8%, rgba(125,211,252,.10), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  ::selection{background:var(--accent);color:#06201c}
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3,h4,p{margin:0}
+  img{max-width:100%;display:block}
+  ul{margin:0;padding:0;list-style:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+  .progress{
+    position:fixed;top:0;left:0;height:2px;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+    z-index:100;transition:width .1s linear;
+  }
+
+  .wrap{width:min(100% - 40px,var(--max));margin-inline:auto;position:relative;z-index:1}
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:90;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    background:color-mix(in srgb, var(--bg) 72%, transparent);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease,background .3s ease;
+  }
+  .nav.scrolled{border-bottom-color:var(--line)}
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:66px;width:min(100% - 40px,var(--max));margin-inline:auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em}
+  .brand-mark{
+    width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(145deg,rgba(94,234,212,.18),rgba(167,139,250,.18));
+    border:1px solid var(--line);
+  }
+  .brand-mark svg{width:18px;height:18px}
+  .brand small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.14em}
+  .nav-links{display:flex;align-items:center;gap:28px}
+  .nav-links a{font-size:14px;color:var(--muted);position:relative;padding:6px 0;transition:color .2s}
+  .nav-links a::after{
+    content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+    background:var(--accent);transition:width .25s ease;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--text)}
+  .nav-links a.active::after,.nav-links a:hover::after{width:100%}
+  .nav-actions{display:flex;align-items:center;gap:10px}
+  .icon-btn{
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    border:1px solid var(--line);background:var(--card);color:var(--text);
+    cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s;
+  }
+  .icon-btn:hover{transform:translateY(-2px);border-color:var(--accent);background:var(--card-strong)}
+  .icon-btn svg{width:17px;height:17px}
+  html[data-theme="light"] .icon-moon{display:none}
+  html[data-theme="dark"] .icon-sun{display:none}
+  .menu-btn{display:none}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:12px 22px;border-radius:999px;font-size:14px;font-weight:600;
+    border:1px solid var(--line);cursor:pointer;
+    transition:transform .2s ease,box-shadow .25s ease,background .25s,border-color .25s;
+    white-space:nowrap;
+  }
+  .btn svg{width:15px;height:15px;transition:transform .2s ease}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#04120f;border-color:transparent;
+    box-shadow:0 10px 30px -12px var(--glow);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px -12px var(--glow)}
+  .btn-primary:hover svg{transform:translateX(3px)}
+  .btn-ghost{background:var(--card);color:var(--text)}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--accent);background:var(--card-strong)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:150px 0 84px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:12.5px;letter-spacing:.06em;color:var(--muted);
+    border:1px solid var(--line);background:var(--card);
+    padding:7px 14px;border-radius:999px;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.85)}}
+  .hero h1{
+    font-size:clamp(2.7rem,6.4vw,4.7rem);
+    line-height:1.05;letter-spacing:-.035em;font-weight:700;
+    margin:22px 0 22px;
+  }
+  .grad{background:linear-gradient(100deg,var(--accent) 8%,var(--accent-2) 52%,var(--accent-3) 96%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{color:var(--muted);font-size:clamp(1rem,1.35vw,1.12rem);max-width:46ch}
+  .hero-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:34px}
+  .hero-meta{display:flex;gap:26px;margin-top:44px;flex-wrap:wrap}
+  .hero-meta div strong{display:block;font-size:1.45rem;letter-spacing:-.02em}
+  .hero-meta div span{font-size:12.5px;color:var(--muted);letter-spacing:.03em}
+
+  .portrait{
+    position:relative;border-radius:30px;padding:14px;
+    background:var(--card);border:1px solid var(--line);
+    box-shadow:var(--shadow);
+  }
+  .portrait-inner{
+    position:relative;border-radius:22px;aspect-ratio:4/4.7;overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 20% 10%, rgba(94,234,212,.55), transparent 55%),
+      radial-gradient(100% 90% at 85% 20%, rgba(167,139,250,.5), transparent 55%),
+      radial-gradient(120% 100% at 50% 105%, rgba(125,211,252,.45), transparent 60%),
+      #0a1220;
+    display:grid;place-items:center;
+  }
+  .portrait-inner::after{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+    background-size:34px 34px;
+    mask-image:radial-gradient(circle at 50% 45%,#000 25%,transparent 78%);
+    -webkit-mask-image:radial-gradient(circle at 50% 45%,#000 25%,transparent 78%);
+  }
+  .monogram{
+    position:relative;z-index:1;text-align:center;color:#fff;
+    font-size:clamp(3.6rem,9vw,5.2rem);font-weight:800;letter-spacing:-.04em;
+    text-shadow:0 18px 60px rgba(0,0,0,.35);
+  }
+  .monogram small{display:block;font-size:12px;font-weight:600;letter-spacing:.34em;margin-top:6px;opacity:.8}
+  .badge-float{
+    position:absolute;z-index:2;display:flex;align-items:center;gap:9px;
+    padding:10px 14px;border-radius:14px;font-size:12.5px;font-weight:600;
+    background:color-mix(in srgb,var(--bg-soft) 88%,transparent);
+    border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(10px);
+  }
+  .badge-float svg{width:15px;height:15px;color:var(--accent)}
+  .badge-1{top:20px;right:-14px;animation:float 6s ease-in-out infinite}
+  .badge-2{bottom:26px;left:-18px;animation:float 7s ease-in-out infinite .8s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+  /* ---------- ticker ---------- */
+  .ticker{
+    border-block:1px solid var(--line);
+    overflow:hidden;padding:16px 0;margin-top:26px;
+    background:var(--card);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  }
+  .ticker-track{display:flex;gap:44px;width:max-content;animation:scroll 34s linear infinite}
+  .ticker-track span{font-size:13px;letter-spacing:.18em;color:var(--muted);white-space:nowrap;text-transform:uppercase;display:flex;align-items:center;gap:44px}
+  .ticker-track span::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.6}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ---------- sections ---------- */
+  section{padding:96px 0;position:relative;scroll-margin-top:80px}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:46px;flex-wrap:wrap}
+  .sec-label{font-size:12px;letter-spacing:.24em;color:var(--accent);font-weight:600;text-transform:uppercase}
+  .sec-head h2{font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.03em;margin-top:12px;font-weight:700}
+  .sec-head p{color:var(--muted);max-width:42ch;font-size:14.5px}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:22px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:30px;transition:border-color .3s,transform .3s,background .3s;
+  }
+  .card:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--card-strong)}
+  .about-text p{color:var(--muted);font-size:15px}
+  .about-text p+p{margin-top:14px}
+  .about-text strong{color:var(--text);font-weight:600}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  .stat{padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+  .stat b{display:block;font-size:2rem;letter-spacing:-.03em;line-height:1.1;
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{font-size:12.5px;color:var(--muted)}
+
+  /* ---------- skills ---------- */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .skill-card h3{font-size:15px;display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .skill-card h3 svg{width:17px;height:17px;color:var(--accent)}
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{
+    font-size:12.5px;padding:6px 12px;border-radius:999px;
+    background:var(--card-strong);border:1px solid var(--line);color:var(--muted);
+    transition:color .2s,border-color .2s,transform .2s;
+  }
+  .pill:hover{color:var(--text);border-color:var(--accent);transform:translateY(-2px)}
+
+  /* ---------- work ---------- */
+  .work-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .project{
+    display:flex;flex-direction:column;overflow:hidden;padding:0;
+    border-radius:var(--radius);
+  }
+  .project:hover{transform:translateY(-5px)}
+  .thumb{
+    position:relative;aspect-ratio:16/9;overflow:hidden;
+    border-bottom:1px solid var(--line);display:grid;place-items:center;
+  }
+  .thumb::before{
+    content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);
+    background-size:30px 30px;
+    mask-image:radial-gradient(circle at 50% 50%,#000,transparent 80%);
+    -webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 80%);
+  }
+  .thumb[data-mood="mint"]{background:radial-gradient(120% 120% at 20% 10%,rgba(94,234,212,.55),transparent 60%),#0a1526}
+  .thumb[data-mood="violet"]{background:radial-gradient(120% 120% at 80% 10%,rgba(167,139,250,.55),transparent 60%),#120b22}
+  .thumb[data-mood="sky"]{background:radial-gradient(120% 120% at 20% 90%,rgba(125,211,252,.5),transparent 60%),#081420}
+  .thumb[data-mood="amber"]{background:radial-gradient(120% 120% at 80% 90%,rgba(251,191,36,.42),transparent 60%),#1b1206}
+  .thumb svg{position:relative;z-index:1;width:64px;height:64px;color:#fff;opacity:.92;filter:drop-shadow(0 10px 26px rgba(0,0,0,.35))}
+  .project-body{padding:24px 26px 26px;display:flex;flex-direction:column;flex:1}
+  .project-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .project h3{font-size:1.08rem;letter-spacing:-.01em}
+  .year{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .project p{color:var(--muted);font-size:14px;margin-top:10px;flex:1}
+  .project .pills{margin-top:18px}
+  .project-foot{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .project-foot span{font-size:12.5px;color:var(--muted)}
+  .arrow{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);transition:transform .25s,background .25s,border-color .25s}
+  .project:hover .arrow{background:var(--accent);border-color:var(--accent);transform:translate(2px,-2px)}
+  .arrow svg{width:14px;height:14px}
+  .project:hover .arrow svg{color:#04120f}
+
+  /* ---------- experience ---------- */
+  .timeline{position:relative;margin-top:8px;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--accent),transparent)}
+  .tl-item{position:relative;padding:0 0 34px 26px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-item::before{
+    content:"";position:absolute;left:-26px;top:7px;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 0 4px var(--glow);
+  }
+  .tl-time{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:600}
+  .tl-item h3{font-size:1.02rem;margin:7px 0 4px}
+  .tl-item .org{font-size:13px;color:var(--muted)}
+  .tl-item p{font-size:14px;color:var(--muted);margin-top:9px;max-width:62ch}
+
+  /* ---------- contact ---------- */
+  #contact{padding-bottom:110px}
+  .contact-card{
+    position:relative;overflow:hidden;border-radius:28px;padding:clamp(30px,5vw,64px);
+    border:1px solid var(--line);
+    background:
+      radial-gradient(90% 130% at 12% 0%,var(--glow),transparent 62%),
+      radial-gradient(80% 120% at 92% 100%,rgba(167,139,250,.16),transparent 62%),
+      var(--card);
+    text-align:center;
+  }
+  .contact-card h2{font-size:clamp(1.9rem,4.6vw,3.1rem);letter-spacing:-.035em;line-height:1.1}
+  .contact-card p{color:var(--muted);margin:18px auto 0;max-width:48ch}
+  .contact-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .social{display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap}
+  .social a{
+    display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);
+    padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);
+    transition:color .2s,border-color .2s,transform .2s;
+  }
+  .social a:hover{color:var(--text);border-color:var(--accent);transform:translateY(-2px)}
+  .social svg{width:15px;height:15px}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:34px 0;position:relative;z-index:1}
+  .foot-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .foot-inner a:hover{color:var(--text)}
+  .to-top{display:inline-flex;align-items:center;gap:7px}
+  .to-top svg{width:13px;height:13px}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:44px}
+    .portrait{max-width:420px;margin-inline:auto;width:100%}
+    .badge-2{left:-6px}
+    .about-grid{grid-template-columns:1fr}
+    .skills-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:760px){
+    .nav-links{
+      position:fixed;top:66px;left:0;right:0;
+      flex-direction:column;align-items:flex-start;gap:4px;
+      padding:18px 20px 26px;background:var(--bg-soft);
+      border-bottom:1px solid var(--line);
+      transform:translateY(-130%);transition:transform .35s cubic-bezier(.2,.7,.2,1);
+    }
+    .nav-links.open{transform:none}
+    .nav-links a{width:100%;padding:12px 0;font-size:15px}
+    .menu-btn{display:grid}
+    .hero{padding-top:114px}
+    .hero-meta{gap:20px}
+    .work-grid{grid-template-columns:1fr}
+    .skills-grid{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    section{padding:72px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#home" aria-label="返回首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 12 5l7 14"/></svg>
+      </span>
+      <span>林知远<small>PORTFOLIO</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="主导航">
+      <a href="#about">关于</a>
+      <a href="#skills">技术栈</a>
+      <a href="#work">项目</a>
+      <a href="#experience">经历</a>
+      <a href="#contact">联系</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="切换主题">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="打开菜单" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- hero -->
+  <section id="home" class="hero" aria-labelledby="heroTitle">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot" aria-hidden="true"></span>开源项目持续维护中 · 接受新合作</span>
+        <h1 id="heroTitle">把复杂系统<br />做得<span class="grad">简单可靠</span>。</h1>
+        <p class="hero-sub">我是林知远，一名全栈与系统开发者。擅长从内核模块到前端界面的完整链路，关注性能、可维护性与真实场景下的工程质量。</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#work">查看项目
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#contact">联系我</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>6+</strong><span>年工程经验</span></div>
+          <div><strong>30+</strong><span>交付项目</span></div>
+          <div><strong>12</strong><span>开源仓库</span></div>
+        </div>
+      </div>
+      <div class="portrait reveal">
+        <div class="portrait-inner">
+          <div class="monogram">知远<small>LIN ZHIYUAN</small></div>
+        </div>
+        <div class="badge-float badge-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6M16 6l6 6-6 6"/></svg>
+          全栈 · 系统层
+        </div>
+        <div class="badge-float badge-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Android · Web · Tooling
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>TypeScript</span><span>Rust</span><span>Go</span><span>C / C++</span><span>Node.js</span><span>React</span><span>Android / Kernel</span><span>PostgreSQL</span><span>Docker</span><span>CI/CD</span>
+      <span>TypeScript</span><span>Rust</span><span>Go</span><span>C / C++</span><span>Node.js</span><span>React</span><span>Android / Kernel</span><span>PostgreSQL</span><span>Docker</span><span>CI/CD</span>
+    </div>
+  </div>
+
+  <!-- about -->
+  <section id="about" aria-labelledby="aboutTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-label">01 — 关于</span>
+          <h2 id="aboutTitle">在底层与产品之间搭桥</h2>
+        </div>
+        <p>喜欢把事情做透：从一行内核补丁，到让用户愿意每天打开的界面。</p>
+      </div>
+      <div class="about-grid">
+        <div class="card about-text reveal">
+          <p>过去几年里，我主要在做两件看起来很远的事：<strong>系统底层</strong>与<strong>产品前端</strong>。一边是 C 与内核模块、构建流水线与设备验证；另一边是组件体系、交互细节与性能优化。</p>
+          <p>我更在意结果是否可靠：接口是否有清晰的契约，失败路径是否可诊断，构建是否可以复现。写代码之外，我也维护开源项目、写构建脚本、整理测试矩阵。</p>
+          <p>目前专注于 Android 系统层工具链与开发者体验，也在探索本地优先的应用架构。</p>
+        </div>
+        <div class="stats reveal">
+          <div class="stat"><b>6+</b><span>年工程经验</span></div>
+          <div class="stat"><b>30+</b><span>交付项目</span></div>
+          <div class="stat"><b>12</b><span>开源仓库</span></div>
+          <div class="stat"><b>8</b><span>覆盖 KMI 变体</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- skills -->
+  <section id="skills" aria-labelledby="skillsTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-label">02 — 技术栈</span>
+          <h2 id="skillsTitle">日常使用的工具</h2>
+        </div>
+        <p>按解决实际问题的方向组织，而不是堆砌名词。</p>
+      </div>
+      <div class="skills-grid">
+        <div class="card skill-card reveal">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6M16 6l6 6-6 6"/></svg>
+            系统与底层
+          </h3>
+          <div class="pills">
+            <span class="pill">C</span><span class="pill">C++</span><span class="pill">Rust</span>
+            <span class="pill">Linux</span><span class="pill">Android Kernel</span>
+            <span class="pill">Shell</span><span class="pill">GKI / KMI</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            应用与前端
+          </h3>
+          <div class="pills">
+            <span class="pill">TypeScript</span><span class="pill">React</span><span class="pill">Vite</span>
+            <span class="pill">Node.js</span><span class="pill">Go</span>
+            <span class="pill">CSS / 动效</span><span class="pill">可访问性</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22v-6M4.9 4.9l4.2 4.2M19.1 19.1l-4.2-4.2M2 12h6M22 12h-6M4.9 19.1l4.2-4.2M19.1 4.9l-4.2 4.2"/></svg>
+            工程与交付
+          </h3>
+          <div class="pills">
+            <span class="pill">Docker</span><span class="pill">GitHub Actions</span><span class="pill">Python</span>
+            <span class="pill">PostgreSQL</span><span class="pill">可复现构建</span><span class="pill">测试矩阵</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- work -->
+  <section id="work" aria-labelledby="workTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-label">03 — 项目</span>
+          <h2 id="workTitle">最近在做的事</h2>
+        </div>
+        <p>选了几个能代表工作方式的项目：从内核模块到界面工具。</p>
+      </div>
+      <div class="work-grid">
+        <article class="card project reveal">
+          <div class="thumb" data-mood="mint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></svg>
+          </div>
+          <div class="project-body">
+            <div class="project-top"><h3>SUSFS4LKM</h3><span class="year">2026</span></div>
+            <p>面向 KernelSU 的 SUSFS 可加载内核模块适配方案。覆盖 8 个 GKI KMI 变体，提供统一 JSON 控制入口、固定退出码与可复现构建流水线。</p>
+            <div class="pills"><span class="pill">C</span><span class="pill">Shell</span><span class="pill">Python</span><span class="pill">CI/CD</span></div>
+            <div class="project-foot"><span>开源 · 内核模块</span><span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </div>
+        </article>
+
+        <article class="card project reveal">
+          <div class="thumb" data-mood="violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+          <div class="project-body">
+            <div class="project-top"><h3>Nebula UI</h3><span class="year">2025</span></div>
+            <p>一套面向数据密集型产品的组件体系。包含设计令牌、可组合组件与文档站，主题与可访问性内建，减少团队重复造轮子。</p>
+            <div class="pills"><span class="pill">TypeScript</span><span class="pill">React</span><span class="pill">Vite</span></div>
+            <div class="project-foot"><span>设计系统 · 组件库</span><span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </div>
+        </article>
+
+        <article class="card project reveal">
+          <div class="thumb" data-mood="sky">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>
+          </div>
+          <div class="project-body">
+            <div class="project-top"><h3>Tidal Notes</h3><span class="year">2025</span></div>
+            <p>本地优先的笔记应用。离线可用、端到端同步、冲突自动合并；核心数据层用 Rust 编写，前端保持轻量。</p>
+            <div class="pills"><span class="pill">Rust</span><span class="pill">React</span><span class="pill">SQLite</span></div>
+            <div class="project-foot"><span>本地优先 · 桌面应用</span><span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </div>
+        </article>
+
+        <article class="card project reveal">
+          <div class="thumb" data-mood="amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 4-6 5 5"/><path d="M3 21h18"/></svg>
+          </div>
+          <div class="project-body">
+            <div class="project-top"><h3>Pulse</h3><span class="year">2024</span></div>
+            <p>面向小团队的实时监控面板。采集指标、聚合查询与告警规则一体化，部署只需一个容器，冷启动在百毫秒级。</p>
+            <div class="pills"><span class="pill">Go</span><span class="pill">PostgreSQL</span><span class="pill">Docker</span></div>
+            <div class="project-foot"><span>可观测性 · 工具</span><span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- experience -->
+  <section id="experience" aria-labelledby="expTitle">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="sec-label">04 — 经历</span>
+          <h2 id="expTitle">一路走来</h2>
+        </div>
+        <p>从业务前端起步，逐步深入到系统层与工具链。</p>
+      </div>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <span class="tl-time">2023 — 现在</span>
+          <h3>高级全栈工程师</h3>
+          <span class="org">系统工具与开发者平台</span>
+          <p>负责内核模块适配工具链与配套 WebUI，设计可复现构建与设备测试矩阵；推动接口契约化，降低跨版本维护成本。</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-time">2020 — 2023</span>
+          <h3>系统工程师</h3>
+          <span class="org">移动设备基础设施</span>
+          <p>参与 Android 系统层组件开发与性能调优，搭建自动化构建与验证流程，把手工步骤压缩成一条命令。</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-time">2018 — 2020</span>
+          <h3>前端工程师</h3>
+          <span class="org">互联网产品团队</span>
+          <p>从零搭建数据看板与组件库，关注可访问性与首屏性能，把设计稿稳定还原成可维护的组件。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- contact -->
+  <section id="contact" aria-labelledby="contactTitle">
+    <div class="wrap">
+      <div class="contact-card reveal">
+        <span class="sec-label">05 — 联系</span>
+        <h2 id="contactTitle" style="margin-top:14px">有想法？聊一聊。</h2>
+        <p>无论是工程合作、开源项目，还是想讨论系统层与前端体验，都欢迎给我发邮件。</p>
+        <div class="contact-actions">
+          <a class="btn btn-primary" href="mailto:hello@example.com">发送邮件
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#home">回到顶部</a>
+        </div>
+        <div class="social">
+          <a href="#" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+            GitHub
+          </a>
+          <a href="#" aria-label="博客">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>
+            博客
+          </a>
+          <a href="mailto:hello@example.com" aria-label="邮箱">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+            hello@example.com
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© <span id="year">2026</span> 林知远 · 用心构建</span>
+    <a class="to-top" href="#home">回到顶部
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* theme */
+  var root = document.documentElement;
+  try{
+    var saved = localStorage.getItem("portfolio-theme");
+    if(saved === "light" || saved === "dark"){ root.setAttribute("data-theme", saved); }
+  }catch(e){}
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try{ localStorage.setItem("portfolio-theme", next); }catch(e){}
+  });
+
+  /* nav state */
+  var nav = document.getElementById("nav");
+  var progress = document.getElementById("progress");
+  function onScroll(){
+    var y = window.scrollY || document.documentElement.scrollTop;
+    nav.classList.toggle("scrolled", y > 10);
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? Math.min(100, (y / h) * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* mobile menu */
+  var menuBtn = document.getElementById("menuBtn");
+  var navLinks = document.getElementById("navLinks");
+  menuBtn.addEventListener("click", function(){
+    var open = navLinks.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  navLinks.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){
+      navLinks.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  /* reveal on scroll */
+  var reveals = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add("in");
+          ro.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    reveals.forEach(function(el, i){
+      el.style.transitionDelay = (Math.min(i, 4) * 60) + "ms";
+      ro.observe(el);
+    });
+
+    /* active nav link */
+    var links = Array.prototype.slice.call(document.querySelectorAll(".nav-links a"));
+    var sections = links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+    var so = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          links.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+        }
+      });
+    }, { threshold: 0.35, rootMargin: "-20% 0px -45% 0px" });
+    sections.forEach(function(s){ if(s) so.observe(s); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  }
+})();
+</script>
+</body>
+</html>
